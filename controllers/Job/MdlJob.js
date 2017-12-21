@@ -62,7 +62,7 @@ exports.ItemList = function(Project, JobMaster, JobNom) {
     return new Promise((resolve, reject) => {
         var Config = require(process.cwd() + '/config')
 
-        var ItemList = []
+        var ItemList = { NodeList: [], ConnectionList: [], NoteList: [], MinX: 999999, MaxX: 0, MinY: 999999, MaxY: 0 }
         var fs = require('fs');
         var xml2js = require('xml2js');
         var parser = new xml2js.Parser();
@@ -80,15 +80,61 @@ exports.ItemList = function(Project, JobMaster, JobNom) {
                     }
                 }
                 for (var NodeNum = 0; NodeNum < result["talendfile:ProcessType"].node.length; NodeNum++) {
-                    var Node = result["talendfile:ProcessType"].node[NodeNum];
-                    var NodeTemp = {
-                        componentName: Node.$["componentName"],
-                        offsetLabelX: Node.$["offsetLabelX"],
-                        offsetLabelY: Node.$["offsetLabelY"],
-                        posX: Node.$["posX"],
-                        posY: Node.$["posY"]
+                    var NodeXml = result["talendfile:ProcessType"].node[NodeNum];
+                    var Node = {
+                        componentName: NodeXml.$["componentName"],
+                        offsetLabelX: NodeXml.$["offsetLabelX"],
+                        offsetLabelY: NodeXml.$["offsetLabelY"],
+                        posX: NodeXml.$["posX"],
+                        posY: NodeXml.$["posY"]
                     }
-                    ItemList.push(NodeTemp)
+                    ItemList.MinX = Math.min(ItemList.MinX, Node.posX)
+                    ItemList.MinY = Math.min(ItemList.MinY, Node.posY)
+                    ItemList.MaxX = Math.max(ItemList.MaxX, Node.posX)
+                    ItemList.MaxY = Math.max(ItemList.MaxY, Node.posY)
+                    for (var ParameterNum = 0; ParameterNum < NodeXml.elementParameter.length; ParameterNum++) {
+                        var ParameterXml = NodeXml.elementParameter[ParameterNum];
+                        Node[ParameterXml.$["name"]] = ParameterXml.$["value"]
+                    }
+                    ItemList.NodeList.push(Node)
+                }
+                for (var ConnectionNum = 0; ConnectionNum < result["talendfile:ProcessType"].connection.length; ConnectionNum++) {
+                    var ConnectionXml = result["talendfile:ProcessType"].connection[ConnectionNum];
+                    var Connection = {
+                        connectorName: ConnectionXml.$["connectorName"],
+                        label: ConnectionXml.$["label"],
+                        lineStyle: ConnectionXml.$["lineStyle"],
+                        metaname: ConnectionXml.$["metaname"],
+                        offsetLabelX: ConnectionXml.$["offsetLabelX"],
+                        offsetLabelY: ConnectionXml.$["offsetLabelY"],
+                        source: ConnectionXml.$["source"],
+                        target: ConnectionXml.$["target"]
+                    }
+                    for (var ParameterNum = 0; ParameterNum < ConnectionXml.elementParameter.length; ParameterNum++) {
+                        var ParameterXml = ConnectionXml.elementParameter[ParameterNum];
+                        Connection[ParameterXml.$["name"]] = ParameterXml.$["value"]
+                    }
+                    ItemList.ConnectionList.push(Connection)
+                }
+                for (var NoteNum = 0; NoteNum < result["talendfile:ProcessType"].note.length; NoteNum++) {
+                    var NoteXml = result["talendfile:ProcessType"].note[NoteNum];
+                    var Note = {
+                        opaque: NoteXml.$["opaque"],
+                        posX: NoteXml.$["posX"],
+                        posY: NoteXml.$["posY"],
+                        sizeHeight: NoteXml.$["sizeHeight"],
+                        sizeWidth: NoteXml.$["sizeWidth"],
+                        text: NoteXml.$["text"]
+                    }
+                    ItemList.MinX = Math.min(ItemList.MinX, Note.posX)
+                    ItemList.MinY = Math.min(ItemList.MinY, Note.posY)
+                    ItemList.MaxX = Math.max(ItemList.MaxX, Note.posX)
+                    ItemList.MaxY = Math.max(ItemList.MaxY, Note.posY)
+                    for (var ParameterNum = 0; ParameterNum < ConnectionXml.elementParameter.length; ParameterNum++) {
+                        var ParameterXml = ConnectionXml.elementParameter[ParameterNum];
+                        Note[ParameterXml.$["name"]] = ParameterXml.$["value"]
+                    }
+                    ItemList.NoteList.push(Note)
                 }
                 resolve(ItemList)
             });

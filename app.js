@@ -9,7 +9,8 @@ var config = require('./config');
 
 app.use(helmet());
 app.use(cors({  
-  origin: [config.AppFrontUrl],
+  // origin: [config.AppFrontUrl],
+  origin: '*',
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
