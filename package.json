@@ -1,0 +1,34 @@
+{
+  "name": "file-uploader",
+  "version": "1.0.0",
+  "description": "An AJAX file uploader using JS and NodeJS",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fady Makram",
+  "license": "MIT",
+  "dependencies": {
+    "adm-zip": "^0.4.7",
+    "async": "^2.6.0",
+    "compression": "^1.7.1",
+    "cors": "^2.8.4",
+    "easy-zip": "0.0.4",
+    "express": "^4.13.3",
+    "extract-zip": "^1.6.6",
+    "formidable": "^1.0.17",
+    "fs-extra": "^4.0.2",
+    "helmet": "^3.9.0",
+    "jsonwebtoken": "^8.1.0",
+    "mssql": "^4.1.0",
+    "mysql": "^2.15.0",
+    "node-stream-zip": "^1.4.1",
+    "socket.io": "^2.0.4",
+    "socket.io-client": "^2.0.4",
+    "unzip-stream": "^0.2.1",
+    "xml2js": "^0.4.19",
+    "zip-dir": "^1.0.2",
+    "zip-folder": "^1.0.0"
+  },
+  "devDependencies": {}
+}
