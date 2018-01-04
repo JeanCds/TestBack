@@ -10,6 +10,30 @@ exports.ProjectList = function(req, res) {
 }
 
 exports.JobTree = function(req, res) {
+    require(process.cwd() + '/controllers/Job/MdlJob')
+    .JobTree(req.body.Project, req.body.JobMaster, req.body.JobNom)
+    .then(function(JobTree) {
+        res.end(JSON.stringify({ success: true, JobTree: JobTree }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
+exports.JobSource = function(req, res) {
+    require(process.cwd() + '/controllers/Job/MdlJob')
+    .JobSource(req.body.Project, req.body.JobMaster, req.body.JobNom, req.body.Version)
+    .then(function(data) {
+        res.end(JSON.stringify({ success: true, SourcePath: data.SourcePath, JobSource: data.JobSource }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
+exports.JobJava = function(req, res) {
+    require(process.cwd() + '/controllers/Job/MdlJob')
+    .JobJava(req.body.Project, req.body.JobMaster, req.body.JavaNom)
+    .then(function(data) {
+        res.end(JSON.stringify({ success: true, JavaPath: data.JavaPath, JavaSource: data.JavaSource }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
+exports.JobTreeOld = function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     function onError(err) { var ToolCtrl = require(process.cwd() + '/controllers/CtrlTool'); ToolCtrl.onError(err, res) }
     function onSuccess(JobTree) {

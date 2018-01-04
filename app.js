@@ -14,14 +14,15 @@ app.use(cors({
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
-app.use(compression());
-app.use(bodyParser.json());
+app.use(compression())
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')))
+app.use('/img', express.static('C:/TalendSource/Upload/Image/'))
 
 app.get('/', function(req, res){
-  res.sendFile(path.join(__dirname, 'views/index.html'));
-});
+  res.sendFile(path.join(__dirname, 'views/index.html'))
+})
 
 app.post('/api/:Controller/:Methode', function(req, res){
   res.setHeader('Content-Type', 'application/json')
@@ -31,7 +32,7 @@ app.post('/api/:Controller/:Methode', function(req, res){
     ObjectCtrl[req.params.Methode](req, res)
   } 
   else { res.end(JSON.stringify({ success: false, Error: "Unknown methode !" }, null, 3)); }
-});
+})
 
 app.post('/upload', function(req, res){
   res.setHeader('Content-Type', 'application/json');

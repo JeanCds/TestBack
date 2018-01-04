@@ -4,7 +4,112 @@ exports.ProjectList = function(onError, onSuccess) {
     onSuccess(ProjectList)
 }
 
-exports.JobTree = function(onError, onSuccess, Project) {
+exports.JobTree = function(Projet, JobMaster) {
+    return new Promise((resolve, reject) => {
+        var Config = require(process.cwd() + '/config')
+        var fs = require('fs')
+        var path = require('path')
+
+        var fileSearch = function(dir, filelist, searchMask) {
+            fs.readdirSync(dir).forEach(file => {
+                if (fs.statSync(path.join(dir, file)).isDirectory()) {
+                    var Folder = { type: 'Folder', name: file, filelist: [] }
+                    fileSearch(path.join(dir, file), Folder.filelist, searchMask)
+                    filelist.push(Folder)
+                }
+                else {
+                    if (file.endsWith(searchMask)) {
+                        var name = file.substring(0, file.lastIndexOf(searchMask))
+                        if (searchMask === '.item') {
+                            var version = name.substring(name.lastIndexOf('_') + 1)
+                            name = name.substring(0, name.lastIndexOf('_'))
+                            filelist.push({ type: 'File', name: name, version: version })
+                        } else {
+                            filelist.push({ type: 'File', name: name })
+                        }
+                    }
+                }
+                filelist.sort(function(a, b){
+                    var x = (a.type == 'Folder' ? 'A' : 'B').toLowerCase() + '-' + a.name.toLowerCase()
+                    var y = (b.type == 'Folder' ? 'A' : 'B').toLowerCase() + '-' + b.name.toLowerCase()
+                    return x < y ? -1 : x > y ? 1 : 0;
+                })
+            })
+        }
+
+        Projet = 'P_OUTILS'
+        JobMaster = 'MCO00_998_ValidationDev'
+        var JobRootDirectory = 'D:/TalendSource/Referentiel/DEV/' + Projet + '/Exe/' + JobMaster + '/'
+        var JobDirectory = JobRootDirectory + JobMaster + '_Seq' + '/items/' + Projet + '/process/'
+        var JobTree = { SourceList: [], JavaList: [] }
+        fileSearch(JobDirectory, JobTree.SourceList, '.item')
+        JobDirectory = JobRootDirectory + JobMaster + '_Seq' + '/src/main/java/routines/'
+        fileSearch(JobDirectory, JobTree.JavaList, '.java')
+        resolve(JobTree)
+    })
+}
+
+exports.JobSource = function(Projet, JobMaster, JobNom, Version) {
+    return new Promise((resolve, reject) => {
+        var Config = require(process.cwd() + '/config')
+        var fs = require('fs')
+        var path = require('path')
+
+        var JobRootDirectory = 'D:/TalendSource/Referentiel/DEV/' + Projet + '/Exe/' + JobMaster + '/'
+        var JobDirectory = JobRootDirectory + JobMaster + '_Seq' + '/items/' + Projet + '/process/'
+        var fileName = JobNom + '_' + Version + '.item'
+        var SourcePath = require(process.cwd() + '/controllers/CtrlTool').fileSearch(JobDirectory, fileName)
+        if (SourcePath !== '') {
+            fs.readFile(path.join(SourcePath, fileName), 'utf8', function read(err, data) {
+                if (err) { throw err }
+                resolve({ SourcePath: SourcePath, JobSource: data })
+            })
+        } else {
+            resolve({ JavaPath: '', JobSource: '' })
+        }
+    })
+}
+
+exports.JobJava = function(Projet, JobMaster, JavaNom) {
+    return new Promise((resolve, reject) => {
+        var Config = require(process.cwd() + '/config')
+        var fs = require('fs')
+        var path = require('path')
+
+        var fileSearch = function(dir, fileName, JavaPath) {
+            var JavaPath = ''
+            fs.readdirSync(dir).forEach(file => {
+                if (JavaPath != '') { return }
+                if (fs.statSync(path.join(dir, file)).isDirectory()) {
+                    JavaPath = fileSearch(path.join(dir, file), fileName, JavaPath)
+                    if (JavaPath !== '') { return JavaPath }
+                }
+                else {
+                    if (file === fileName + '.java') {
+                        JavaPath  =  dir
+                        return JavaPath
+                    }
+                }
+            })
+            return JavaPath 
+        }
+
+        var JobRootDirectory = 'D:/TalendSource/Referentiel/DEV/' + Projet + '/Exe/' + JobMaster + '/'
+        var JobDirectory = JobRootDirectory + JobMaster + '_Seq' + '/src/main/java/routines/'
+        var JavaPath = fileSearch(JobDirectory, JavaNom, JavaPath)
+        if (JavaPath !== '') {
+            fs.readFile(path.join(JavaPath, JavaNom + '.java'), 'utf8', function read(err, data) {
+                if (err) { throw err }
+                var JavaSource = data
+                resolve({ JavaPath: JavaPath, JavaSource: JavaSource })
+            })
+        } else {
+            resolve({ JavaPath: '', JavaSource: '' })
+        }
+    })
+}
+
+exports.JobTreeOld = function(onError, onSuccess, Project) {
     var Config = require(process.cwd() + '/config')
     var JobTree = []
     if (Project === 'Project1') {
@@ -58,6 +163,7 @@ exports.JobInfo = function(onError, onSuccess, JobInterfaceID) {
     sql.on('error', err => { sql.close(); onError(err); })
 }
 
+// Composition
 exports.ItemList = function(Project, JobMaster, JobNom) {
     return new Promise((resolve, reject) => {
         var Config = require(process.cwd() + '/config')
