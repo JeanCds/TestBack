@@ -247,3 +247,38 @@ exports.ItemList = function(Project, JobMaster, JobNom) {
         });
     });
 }
+
+exports.Composant = function(Project, JobMaster, JobNom, ComposantId) {
+    return new Promise((resolve, reject) => {
+        var Config = require(process.cwd() + '/config')
+
+        var Composant = { NodeList: [], ConnectionList: [], NoteList: [], MinX: 999999, MaxX: 0, MinY: 999999, MaxY: 0 }
+        var fs = require('fs');
+        var xml2js = require('xml2js');
+        var parser = new xml2js.Parser();
+        var FileLocation = "D:/TalendSource/Referentiel/DEV/P_OUTILS/Exe/MCO00_998_ValidationDev/MCO00_998_ValidationDev_Seq/items/p_outils/process/MCO/Test/MCO00_998_ValidationDev_Seq_1.8.item";
+        fs.readFile(FileLocation, function(err, data) {
+            parser.parseString(data, function (err, result) {
+                for (var NodeNum = 0; NodeNum < result["talendfile:ProcessType"].node.length; NodeNum++) {
+                    var NodeXml = result["talendfile:ProcessType"].node[NodeNum];
+                    var Node = {
+                        componentName: NodeXml.$["componentName"],
+                        offsetLabelX: NodeXml.$["offsetLabelX"],
+                        offsetLabelY: NodeXml.$["offsetLabelY"],
+                        posX: NodeXml.$["posX"],
+                        posY: NodeXml.$["posY"]
+                    }
+                    for (var ParameterNum = 0; ParameterNum < NodeXml.elementParameter.length; ParameterNum++) {
+                        var ParameterXml = NodeXml.elementParameter[ParameterNum];
+                        Node[ParameterXml.$["name"]] = ParameterXml.$["value"]
+                    }
+                    if (Node.UNIQUE_NAME === ComposantId) {
+                        Composant = Node
+                        break
+                    }
+                }
+                resolve(Composant)
+            });
+        });
+    });
+}
