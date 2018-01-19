@@ -25,13 +25,19 @@ app.get('/', function(req, res){
 })
 
 app.post('/api/:Controller/:Methode', function(req, res){
-  res.setHeader('Content-Type', 'application/json')
-  var ObjectCtrl = require('./controllers/' + req.params.Controller + '/Ctrl' + req.params.Controller);
-  if (typeof ObjectCtrl[req.params.Methode] === "function") {
+  try {
     res.setHeader('Content-Type', 'application/json')
-    ObjectCtrl[req.params.Methode](req, res)
-  } 
-  else { res.end(JSON.stringify({ success: false, Error: "Unknown methode !" }, null, 3)); }
+    var ObjectCtrl = require('./controllers/' + req.params.Controller + '/Ctrl' + req.params.Controller);
+    if (typeof ObjectCtrl[req.params.Methode] === "function") {
+      res.setHeader('Content-Type', 'application/json')
+      ObjectCtrl[req.params.Methode](req, res)
+    } 
+    else { res.end(JSON.stringify({ success: false, Error: "Unknown methode !" }, null, 3)); }
+  }
+  catch(error) {
+    console.log('error !!!');
+    console.log(error);
+  }
 })
 
 app.post('/upload', function(req, res){

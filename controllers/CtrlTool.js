@@ -8,19 +8,23 @@ var fileSearch = function(dir, fileName) {
     var path = require('path')
 
     var filePath = ''
-    fs.readdirSync(dir).forEach(file => {
-        if (filePath != '') { return }
-        if (fs.statSync(path.join(dir, file)).isDirectory()) {
-            filePath = fileSearch(path.join(dir, file), fileName)
-            if (filePath !== '') { return filePath }
-        }
-        else {
-            if (file === fileName) {
-                filePath  =  dir
-                return filePath
+    try {
+        fs.readdirSync(dir).forEach(file => {
+            if (filePath != '') { return }
+            if (fs.statSync(path.join(dir, file)).isDirectory()) {
+                filePath = fileSearch(path.join(dir, file), fileName)
+                if (filePath !== '') { return filePath }
             }
-        }
-    })
+            else {
+                if (file === fileName) {
+                    filePath  =  dir
+                    return filePath
+                }
+            }
+        })
+    } catch (err) {
+        throw err
+    }
     return filePath 
 }
 exports.fileSearch = fileSearch
