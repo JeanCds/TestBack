@@ -1,3 +1,9 @@
+exports.OracleTest = function(req, res) {
+    require(process.cwd() + '/controllers/Test/MdlTest').OracleTest().then(function(recordset) {
+        res.end(JSON.stringify({ success: true }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
 exports.PromiseTest = function(req, res) {
     var JobInterfaceID = req.body.JobInterfaceID;
     require(process.cwd() + '/controllers/Test/MdlTest').PromiseTest(JobInterfaceID).then(function(recordset) {
