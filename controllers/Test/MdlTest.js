@@ -1,3 +1,62 @@
+exports.SchemaCheck = function() {
+    return new Promise((resolve, reject) => {
+        var BddTool = require(process.cwd() + '/global/BddTool')
+        var BddSchema = require(process.cwd() + '/global/BddSchema')
+
+        var Schema = BddSchema.getSchema()
+        var CheckResult = {}
+        var TableNbr = Object.keys(Schema.Bdd1).length
+        var TableTreated = 0
+
+        function getTableAnalyse(TableName)
+        {
+            BddTool.QueryExec(`SELECT * FROM ${TableName} LIMIT 1`, (err) => { }, (recordset) => { 
+                console.log('recordset')
+                console.log(recordset)
+                if (recordset === undefined) {
+                    CheckResult[TableName].push({TableName: TableName, Error: 'Table manquante' })
+                } else {
+                    /*
+                    for(var ColumnName in recordset) {
+                        if (TableName[ColumnName] === undefined) {
+                            CheckResult[TableName].push({TableName: TableName, ColumnName: ColumnName})
+                        }
+                    }
+                    */
+                }
+                TableTreated++
+                if (TableTreated === TableNbr) { resolve(CheckResult) }
+            })
+        }
+    
+        /*
+        for(var TableNum = 0; TableNum < TableNbr; TableNum++) {
+            var TableName = Object.keys(Schema.Bdd1)[TableNum]
+            CheckResult[TableName] = []
+            getTableAnalyse(TableName)
+        }
+        */
+        for(var TableName in Schema.Bdd1) {
+            CheckResult[TableName] = {}
+            BddSchema.getTableConfig(TableName).then(function(TableConfig) {
+                var TableName = TableConfig.TableName
+                CheckResult[TableName] = []
+                if (TableConfig.Column === undefined) {
+                    CheckResult[TableName].push({TableName: TableName, Error: 'Table manquante' })
+                } else {
+                    for(var ColumnName in Schema.Bdd1[TableName]) {
+                        if (!TableConfig.ColumnList.includes(ColumnName)) {
+                            CheckResult[TableName].push({ TableName: TableName, ColumnName: ColumnName, Error: 'Colonne manquante' })
+                        }
+                    }
+                }
+                TableTreated++
+                if (TableTreated === TableNbr) { resolve(CheckResult) }
+            })
+        }
+    })
+}
+
 exports.OracleTest = function(JobInterfaceID) {
     return new Promise((resolve, reject) => {
         var oracledb = require('oracledb')

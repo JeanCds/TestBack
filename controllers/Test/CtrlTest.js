@@ -1,3 +1,9 @@
+exports.Test = function(req, res) {
+    require(process.cwd() + '/controllers/Test/MdlTest').SchemaCheck().then(function(CheckResult) {
+        res.end(JSON.stringify({ success: true, CheckResult: CheckResult }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
 exports.OracleTest = function(req, res) {
     require(process.cwd() + '/controllers/Test/MdlTest').OracleTest().then(function(recordset) {
         res.end(JSON.stringify({ success: true }, null, 3));
