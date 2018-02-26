@@ -1,3 +1,39 @@
+exports.RecordUpdate = function() {
+    var BddId = 'Bdd1'
+    var Environnement = 'PRD'
+    var TableName = 'dsi_hlp_temp'
+    var Record = {
+        ID: '10',
+        Libelle: 'test'
+    }
+    return new Promise((resolve, reject) => {
+        require(process.cwd() + '/global/BddTool').RecordAddUpdate(
+            BddId, Environnement, TableName, Record
+        ).then(function(data) {
+            resolve(data)
+        }).catch(function(err) { reject(err) })
+    })
+}
+
+exports.SetData = function() {
+    return new Promise((resolve, reject) => {
+        var fs = require('fs')
+        var Config = require(process.cwd() + '/config')
+        var ConfigPath = Config.WorkSpaceFolder + 'MyJson.json'
+        var ConfigParsed = JSON.parse(fs.readFileSync(ConfigPath, 'UTF-8'))
+        Config.Test = ConfigParsed
+        resolve(ConfigParsed)
+    })
+}
+
+exports.GetData = function() {
+    return new Promise((resolve, reject) => {
+        var fs = require('fs')
+        var Config = require(process.cwd() + '/config')
+        resolve(Config)
+    })
+}
+
 exports.SchemaCheck = function() {
     return new Promise((resolve, reject) => {
         var BddTool = require(process.cwd() + '/global/BddTool')

@@ -7,6 +7,16 @@ var bodyParser = require('body-parser')
 var path = require('path');
 var config = require('./config');
 
+if (config.WorkSpaceFolder !== undefined && config.WorkSpaceFolder !== null) {
+  var fs = require('fs')
+  var ConfigPath = config.WorkSpaceFolder + 'MyJson.json'
+  try {
+    var ConfigParsed = JSON.parse(fs.readFileSync(ConfigPath, 'UTF-8'))
+    config.Test = ConfigParsed
+  }
+  catch (err) { }
+}
+
 app.use(helmet());
 app.use(cors({  
   // origin: [config.AppFrontUrl],

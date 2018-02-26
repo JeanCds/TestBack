@@ -3,20 +3,25 @@ var Config = require(process.cwd() + '/config')
 var Schema = {
     Bdd1: {
         dsi_hlp_utilisateur: {
-            UtilisateurID: { type: "int", key: true },
+            UtilisateurID: { type: "Int", key: true },
             Identifiant: { type: "String" },
             MotDePasse: { type: "String" },
         },
         dsi_hlp_JobSequenseur: {
-            JobSequenseurID: { type: "int", key: true },
+            JobSequenseurID: { type: "Int", key: true },
             Projet: { type: "String" },
             Sequenseur: { type: "String" },
         },
         generic_parameter: {
-            id: { type: "int", key: true },
+            id: { type: "Int", key: true },
             Theme: { type: "String" },
             Environnement: { type: "String" },
             NewCol: { type: "String" }
+        },
+        dsi_hlp_temp: {
+            ID: { Type: 'Int', Key: true },
+            Libelle: { Type: 'String' },
+            Temp: { Type: 'String' }
         }
     },
     Bdd2: {

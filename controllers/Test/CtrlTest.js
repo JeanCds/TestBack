@@ -1,3 +1,21 @@
+exports.RecordUpdate = function(req, res) {
+    require(process.cwd() + '/controllers/Test/MdlTest').RecordUpdate().then(function(data) {
+        res.end(JSON.stringify({ success: true, Data: data }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
+exports.SetData = function(req, res) {
+    require(process.cwd() + '/controllers/Test/MdlTest').SetData().then(function(data) {
+        res.end(JSON.stringify({ success: true, Data: data }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
+exports.GetData = function(req, res) {
+    require(process.cwd() + '/controllers/Test/MdlTest').GetData().then(function(data) {
+        res.end(JSON.stringify({ success: true, Data: data }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
 exports.Test = function(req, res) {
     require(process.cwd() + '/controllers/Test/MdlTest').SchemaCheck().then(function(CheckResult) {
         res.end(JSON.stringify({ success: true, CheckResult: CheckResult }, null, 3));
@@ -57,4 +75,3 @@ exports.XmlToJs = function(req, res) {
         });
     });
 }
-
