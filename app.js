@@ -29,6 +29,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/img', express.static('C:/TalendSource/Upload/Image/'))
+app.use('/Script', express.static('C:/TalendSource/Upload/Script/'))
 
 app.get('/', function(req, res){
   res.sendFile(path.join(__dirname, 'views/index.html'))
