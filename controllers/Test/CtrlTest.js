@@ -4,6 +4,12 @@ exports.RecordUpdate = function(req, res) {
     }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
 }
 
+exports.Search = function(req, res) {
+    require(process.cwd() + '/controllers/Test/MdlTest').Search(req.body.text, req.body.option).then(function(data) {
+        res.end(JSON.stringify({ success: true, Data: data }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
 exports.SetData = function(req, res) {
     require(process.cwd() + '/controllers/Test/MdlTest').SetData().then(function(data) {
         res.end(JSON.stringify({ success: true, Data: data }, null, 3));

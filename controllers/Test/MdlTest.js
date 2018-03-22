@@ -15,6 +15,32 @@ exports.RecordUpdate = function() {
     })
 }
 
+exports.Search = function(text, option) {
+    return new Promise((resolve, reject) => {
+
+        var ResultList = [
+            { methode: Search1, status: -1, data: null },
+            { methode: Search2, status: -1, data: null }
+        ]
+
+        ResultList.forEach( function(Result) {
+            Result.methode({ text: text }).then((data) => {
+                Result.status = 1
+                Result.data = data
+            }).catch(function(err) {
+                Result.status = 0
+                Result.err = err
+            }).then(function() { ResultUpdate() })
+        })
+
+        var ResultUpdate = function() {
+            var NotFinishNbr = ResultList.filter(a => a.status === -1).length
+            if (NotFinishNbr > 0) { return }
+            resolve(ResultList)
+        }
+    });
+}
+
 exports.SetData = function() {
     return new Promise((resolve, reject) => {
         var fs = require('fs')
@@ -128,5 +154,30 @@ exports.PromiseTest = function(JobInterfaceID) {
             resolve(result.recordset)
         }).catch(err => { sql.close(); reject(err) })
         sql.on('error', err => { sql.close(); reject(err) })
-    });
+    })
+}
+
+var Search1 = function(Text) {
+    return new Promise((resolve, reject) => {
+        var Config = require(process.cwd() + '/config')
+        var sql = require('mssql')
+    
+        sql.connect(Config.AppBdd.config).then(() => { return sql.query`
+            SELECT * 
+            FROM   dsi_hlp_JobInterfaceXXx WITH(NOLOCK)  
+            WHERE  Sequenceur LIKE '%${Text}%' 
+        `}).then(result => {
+            sql.close()
+            resolve(result.recordset)
+        }).catch(err => { sql.close(); reject(err) })
+        sql.on('error', err => { sql.close(); reject(err) })
+    })
+}
+
+var Search2 = function(Text) {
+    return new Promise((resolve, reject) => {
+        var Config = require(process.cwd() + '/config')
+        var sql = require('mssql')
+        resolve('no result')
+    })
 }
