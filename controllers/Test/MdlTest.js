@@ -181,3 +181,11 @@ var Search2 = function(Text) {
         resolve('no result')
     })
 }
+
+exports.Test = function(name, array, array2) {
+    return new Promise((resolve, reject) => {
+        console.log(array)
+        console.log(array2)
+        resolve('TestOk')
+    })
+}
