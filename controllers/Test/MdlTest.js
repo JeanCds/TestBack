@@ -189,3 +189,63 @@ exports.Test = function(name, array, array2) {
         resolve('TestOk')
     })
 }
+
+exports.Test2 = function() {
+    return new Promise((resolve, reject) => {
+        var MonObjetData = {
+            data1: 0,
+            data2: 'Montext'
+        }
+        MaFonction1(MonObjetData)
+        .then(MaFonction2)
+        .then((data) => {
+            console.log(data)
+            resolve('TestOk')
+        }).catch(function(err) {
+            reject(err)
+        })
+    })
+}
+
+exports.Test3 = function() {
+    return new Promise((resolve, reject) => {
+        var ToDo = {
+            Data1: 'Abc',
+            Data2: 'Poiu',
+            Type1: true,
+            Type2: true,
+            ContextList: [
+                {Truc1: '111', Truc2: 'ihdsgdfh'},
+                {Truc1: '111', Truc2: 'sdfklgjh'}
+            ]
+        }
+        var MonObjetData = {
+            data1: 0,
+            data2: 'Montext'
+        }
+        MaFonction1(MonObjetData)
+        .then(MaFonction2)
+        .then((data) => {
+            console.log(data)
+            resolve('TestOk')
+        }).catch(function(err) {
+            reject(err)
+        })
+    })
+}
+
+var MaFonction1 = function(MonObjetData) {
+    return new Promise((resolve, reject) => {
+        throw new Error(`Mon message d'erreur`)
+        MonObjetData.data3 = 25 / MonObjetData.data1
+        MonObjetData.data1++
+        resolve(MonObjetData)
+    })
+}
+
+var MaFonction2 = function(MonObjetData) {
+    return new Promise((resolve, reject) => {
+        MonObjetData.NewParam = 'MaValue'
+        resolve(MonObjetData)
+    })
+}

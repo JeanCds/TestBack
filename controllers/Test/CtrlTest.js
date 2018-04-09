@@ -28,6 +28,12 @@ exports.Test = function(req, res) {
     }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
 }
 
+exports.Test2 = function(req, res) {
+    require(process.cwd() + '/controllers/Test/MdlTest').Test2().then(function(data) {
+        res.end(JSON.stringify({ success: true, data: data }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
+
 exports.OracleTest = function(req, res) {
     require(process.cwd() + '/controllers/Test/MdlTest').OracleTest().then(function(recordset) {
         res.end(JSON.stringify({ success: true }, null, 3));
