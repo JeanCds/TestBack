@@ -4,7 +4,8 @@
   "description": "An AJAX file uploader using JS and NodeJS",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "uglify": "mkdir -p dist/js && uglifyjs src/js/*.js -m -o dist/js/app.js"
   },
   "author": "Fady Makram",
   "license": "MIT",
@@ -32,5 +33,7 @@
     "zip-dir": "^1.0.2",
     "zip-folder": "^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "uglify-js": "^3.3.21"
+  }
 }

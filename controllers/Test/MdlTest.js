@@ -249,3 +249,20 @@ var MaFonction2 = function(MonObjetData) {
         resolve(MonObjetData)
     })
 }
+
+exports.Test4 = function() {
+    return new Promise((resolve, reject) => {
+        var Config = require(process.cwd() + '/config')
+        var sql = require('mssql')
+    
+        sql.connect(Config.AppBdd.config).then(() => { return sql.query`
+            INSERT INTO dsi_hlp_MantisType (Code, Nom)
+            VALUES ('Tst', 'Test'); 
+            SELECT @@IDENTITY AS \'identity\'; 
+        `}).then(result => {
+            sql.close()
+            resolve(result.recordset)
+        }).catch(err => { sql.close(); reject(err) })
+        sql.on('error', err => { sql.close(); reject(err) })
+    })
+}
