@@ -84,3 +84,11 @@ exports.Composant = function(req, res) {
         res.end(JSON.stringify({ success: true, Composant: Composant }, null, 3));
     }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
 }
+
+exports.Compare = function(req, res) {
+    require(process.cwd() + '/controllers/Job/MdlJob')
+    .Compare(req.body.Project, req.body.JobMaster)
+    .then(function(Composant) {
+        res.end(JSON.stringify({ success: true, Composant: Composant }, null, 3));
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
+}
