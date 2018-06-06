@@ -35,6 +35,26 @@ exports.QueryExec = function(Query, onError, onSuccess) {
     }
 }
 
+var QueryExecMySqlSync = (Query) => {
+    var sql = require('mysql-libmysqlclient')
+    var connection = sql.createConnection(Config.AppBdd.configMySql)
+    var handle = connection.querySync(Query)
+    var results = handle.fetchAllSync()
+    connection.end()
+    return results
+}
+
+exports.QueryExecSync = function(Query) {
+    if (Config.AppBdd.Type === 'MsSql') {
+
+    } else if (Config.AppBdd.Type === 'MySql') {
+        return QueryExecMySqlSync(Query)
+    } else if (Config.AppBdd.Type === 'Oracle') {
+        
+    }
+    return null
+}
+
 var floatFormat = function(Text) {
     return Text
 }

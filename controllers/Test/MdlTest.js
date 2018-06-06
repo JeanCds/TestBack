@@ -38,7 +38,7 @@ exports.Search = function(text, option) {
             if (NotFinishNbr > 0) { return }
             resolve(ResultList)
         }
-    });
+    })
 }
 
 exports.SetData = function() {
@@ -182,7 +182,33 @@ var Search2 = function(Text) {
     })
 }
 
-exports.Test = function(name, array, array2) {
+exports.Test = (name, array, array2) => {
+    var BddTool = require(process.cwd() + '/global/BddTool')
+    let data = { toto: '123456' }
+    recordset = BddTool.QueryExecSync('SELECT 1 + 1 AS solution')
+    return data
+}
+
+exports.TestOld1 = (name, array, array2) => {
+    /*
+    return new Promise((resolve, reject) => {
+        let data = { toto: '123456' }
+        for await (const info of this.TestPromise(data)) {
+            console.log(info)
+        }
+        resolve('TestOk1')
+    })
+    */
+}
+
+exports.TestPromise = (data) => {
+    return new Promise((resolve, reject) => {
+        let newData = { toto: 'AZERTY', data: data }
+        resolve(newData)
+    })
+}
+
+exports.TestOld = function(name, array, array2) {
     return new Promise((resolve, reject) => {
         console.log(array)
         console.log(array2)
@@ -264,5 +290,32 @@ exports.Test4 = function() {
             resolve(result.recordset)
         }).catch(err => { sql.close(); reject(err) })
         sql.on('error', err => { sql.close(); reject(err) })
+    })
+}
+
+exports.ExecBat = function() {
+    return new Promise((resolve, reject) => {
+        const fs = require('fs')
+        const process = require('child_process')
+        var ls = process.spawn('C:/Temp/Temp/JOB01_Test/JOB01_Test/JOB01_Test_run.bat')
+        var logFile = 'C:/Temp/Temp/myOutput.txt'
+        var myFile = fs.createWriteStream(logFile)
+
+        ls.stdout.pipe(myFile)
+
+        /*
+        ls.stdout.on('data', function (data) {
+            console.log(data.toString())
+        })
+        ls.stderr.on('data', function (data) {
+            console.log(data.toString())
+        })
+        */
+
+        ls.on('close', function (code) {
+            fs.appendFileSync(logFile, `[${new Date(Date.now()).toLocaleString()}][code] ${code}`)
+        })
+
+        resolve()
     })
 }

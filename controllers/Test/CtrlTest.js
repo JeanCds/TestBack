@@ -23,6 +23,15 @@ exports.GetData = function(req, res) {
 }
 
 exports.Test = function(req, res) {
+    try {
+        let data = require(process.cwd() + '/controllers/Test/MdlTest').Test(req.body.name, req.body.array, req.body.array2)
+        res.end(JSON.stringify({ success: true, TestResult: data }, null, 3))
+    } catch (err) {
+        require(process.cwd() + '/controllers/CtrlTool').onError(err, res)
+    }
+}
+
+exports.TestOld = function(req, res) {
     require(process.cwd() + '/controllers/Test/MdlTest').Test(req.body.name, req.body.array, req.body.array2).then(function(data) {
         res.end(JSON.stringify({ success: true, TestResult: data }, null, 3));
     }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res); })
@@ -92,4 +101,10 @@ exports.XmlToJs = function(req, res) {
             onSuccess();
         });
     });
+}
+
+exports.ExecBat = function(req, res) {
+    require(process.cwd() + '/controllers/Test/MdlTest').ExecBat().then((data) => {
+        res.end(JSON.stringify({ success: true, Data: data }, null, 3))
+    }).catch(function(err) { require(process.cwd() + '/controllers/CtrlTool').onError(err, res) })
 }
